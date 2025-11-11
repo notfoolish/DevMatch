@@ -3,6 +3,9 @@ using backend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add configuration from .env file (will be read by appsettings.json configuration)
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -26,13 +29,14 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add HTTP client for GitHub API
+// Add HTTP client for external APIs
 builder.Services.AddHttpClient();
 
 // Register services
 builder.Services.AddScoped<backend.Services.IGitHubService, backend.Services.GitHubService>();
 builder.Services.AddScoped<backend.Services.IAiService, backend.Services.AiService>();
 builder.Services.AddScoped<backend.Services.IJobService, backend.Services.JobService>();
+builder.Services.AddScoped<backend.Services.IJoobleService, backend.Services.JoobleService>();
 
 var app = builder.Build();
 

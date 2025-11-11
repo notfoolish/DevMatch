@@ -67,8 +67,11 @@ namespace backend.Services
                 var gitHubData = await _gitHubService.AnalyzeProfileAsync(username);
                 var profileAnalysis = await AnalyzeProfileAsync(username, gitHubData);
                 
-                // Get available jobs
-                var jobs = await _jobService.GetActiveJobsAsync();
+                // Get user location for location-based job search
+                var userLocation = gitHubData.Profile?.Location;
+                
+                // Get available jobs with location consideration
+                var jobs = await _jobService.GetActiveJobsAsync(userLocation);
                 
                 // Generate job matches
                 var jobMatches = await GenerateJobMatches(profileAnalysis, jobs);

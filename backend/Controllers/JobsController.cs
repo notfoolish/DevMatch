@@ -20,15 +20,16 @@ namespace backend.Controllers
         /// <summary>
         /// Get all active job postings
         /// </summary>
+        /// <param name="location">Optional location filter for jobs</param>
         /// <returns>List of active job postings</returns>
         [HttpGet]
-        public async Task<ActionResult<List<JobPostingDto>>> GetActiveJobs()
+        public async Task<ActionResult<List<JobPostingDto>>> GetActiveJobs([FromQuery] string? location = null)
         {
             try
             {
-                _logger.LogInformation("Retrieving all active job postings");
+                _logger.LogInformation($"Retrieving all active job postings for location: {location ?? "all"}");
                 
-                var jobs = await _jobService.GetActiveJobsAsync();
+                var jobs = await _jobService.GetActiveJobsAsync(location);
                 return Ok(jobs);
             }
             catch (Exception ex)
