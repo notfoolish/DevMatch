@@ -5,7 +5,6 @@ import ProfileAnalysis from './components/ProfileAnalysis'
 import JobMatches from './components/JobMatches'
 import LoadingSpinner from './components/LoadingSpinner'
 
-// Configure axios base URL
 const API_BASE_URL = 'http://localhost:5000'
 axios.defaults.baseURL = API_BASE_URL
 
@@ -18,44 +17,23 @@ function App() {
   const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState('analysis')
 
-  // State management explanation:
-  // useState manages component-level state for form inputs, loading states, and data
-  // useEffect handles side effects like API calls and data synchronization
-  // When githubUsername changes, we reset previous data to avoid stale state
-  // The loading state (isAnalyzing) prevents multiple simultaneous requests
-
   const handleAnalyze = async () => {
     if (!githubUsername.trim()) return
-    
     setIsAnalyzing(true)
     setError('')
     setProfileData(null)
     setAiAnalysis(null)
     setJobMatches([])
-    
     try {
-      // Fetch GitHub profile data
-      console.log(`Fetching profile data for: ${githubUsername}`)
       const profileResponse = await axios.get(`/api/github/${githubUsername}`)
       setProfileData(profileResponse.data)
-      
-      // Fetch AI analysis
-      console.log(`Fetching AI analysis for: ${githubUsername}`)
       const aiResponse = await axios.get(`/api/ai/analyze/${githubUsername}`)
       setAiAnalysis(aiResponse.data)
-      
-      // Fetch available jobs (we'll match them client-side with AI data)
-      console.log('Fetching available jobs...')
       const jobsResponse = await axios.get('/api/jobs')
       setJobMatches(jobsResponse.data || [])
-      
-      // Switch to analysis tab after successful fetch
       setActiveTab('analysis')
-      
     } catch (err) {
-      console.error('Error analyzing profile:', err)
       let errorMessage = 'Failed to analyze GitHub profile. Please check the username and try again.'
-      
       if (err.code === 'ERR_NETWORK' || err.message.includes('Network Error')) {
         errorMessage = 'Unable to connect to the backend server. Make sure the ASP.NET Core backend is running on http://localhost:5000'
       } else if (err.response?.status === 404) {
@@ -63,14 +41,12 @@ function App() {
       } else if (err.response?.data?.message) {
         errorMessage = err.response.data.message
       }
-      
       setError(errorMessage)
     } finally {
       setIsAnalyzing(false)
     }
   }
 
-  // Reset data when username changes
   useEffect(() => {
     if (profileData && githubUsername !== profileData.profile?.login) {
       setProfileData(null)
@@ -82,7 +58,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -108,7 +83,6 @@ function App() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -118,8 +92,6 @@ function App() {
             Analyze your GitHub profile with AI and get matched with perfect job opportunities
             based on your skills, experience, and coding patterns.
           </p>
-          
-          {/* Search Input */}
           <div className="max-w-md mx-auto mb-8">
             <div className="relative">
               <input
@@ -145,16 +117,12 @@ function App() {
               ) : 'Analyze Profile'}
             </button>
           </div>
-
-          {/* Error Message */}
           {error && (
             <div className="max-w-md mx-auto mb-8 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
               <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
               <p className="text-red-700 text-sm">{error}</p>
             </div>
           )}
-
-          {/* Success Message */}
           {profileData && !isAnalyzing && (
             <div className="max-w-md mx-auto mb-8 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center">
               <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
@@ -164,11 +132,9 @@ function App() {
         </div>
       </section>
 
-      {/* Analysis Results */}
       {profileData && (
         <section className="py-8 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            {/* Tab Navigation */}
             <div className="border-b border-gray-200 mb-8">
               <div className="flex space-x-8">
                 <button
@@ -195,8 +161,6 @@ function App() {
                 </button>
               </div>
             </div>
-
-            {/* Tab Content */}
             {activeTab === 'analysis' && (
               <ProfileAnalysis 
                 profileData={profileData} 
@@ -204,7 +168,6 @@ function App() {
                 isLoading={isAnalyzing}
               />
             )}
-
             {activeTab === 'jobs' && (
               <JobMatches 
                 jobs={jobMatches}
@@ -216,7 +179,6 @@ function App() {
         </section>
       )}
 
-      {/* Features Section - Only show if no data */}
       {!profileData && !isAnalyzing && (
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
           <div className="max-w-6xl mx-auto">
@@ -236,7 +198,6 @@ function App() {
                   to understand your skills and experience level.
                 </p>
               </div>
-              
               <div className="text-center p-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <BarChart3 className="h-8 w-8 text-green-600" />
@@ -249,7 +210,6 @@ function App() {
                   and areas of expertise with visual analytics.
                 </p>
               </div>
-              
               <div className="text-center p-6">
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="h-8 w-8 text-purple-600" />
@@ -267,7 +227,6 @@ function App() {
         </section>
       )}
 
-      {/* Footer */}
       <footer className="bg-gray-800 text-white py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gray-400">

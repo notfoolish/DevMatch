@@ -17,11 +17,6 @@ namespace backend.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Analyze a GitHub profile and return detailed information
-        /// </summary>
-        /// <param name="username">GitHub username to analyze</param>
-        /// <returns>GitHub profile analysis including repositories and language stats</returns>
         [HttpGet("{username}")]
         public async Task<ActionResult<GitHubAnalysisResponseDto>> AnalyzeProfile(string username)
         {
@@ -54,11 +49,6 @@ namespace backend.Controllers
             }
         }
 
-        /// <summary>
-        /// Check if a GitHub user exists
-        /// </summary>
-        /// <param name="username">GitHub username to check</param>
-        /// <returns>Boolean indicating if user exists</returns>
         [HttpHead("{username}")]
         public async Task<ActionResult> CheckUserExists(string username)
         {

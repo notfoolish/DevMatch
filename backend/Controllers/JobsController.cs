@@ -17,11 +17,6 @@ namespace backend.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Get all active job postings
-        /// </summary>
-        /// <param name="location">Optional location filter for jobs</param>
-        /// <returns>List of active job postings</returns>
         [HttpGet]
         public async Task<ActionResult<List<JobPostingDto>>> GetActiveJobs([FromQuery] string? location = null)
         {
@@ -39,11 +34,6 @@ namespace backend.Controllers
             }
         }
 
-        /// <summary>
-        /// Get a specific job posting by ID
-        /// </summary>
-        /// <param name="id">Job posting ID</param>
-        /// <returns>Job posting details</returns>
         [HttpGet("{id:int}")]
         public async Task<ActionResult<JobPostingDto>> GetJobById(int id)
         {
@@ -66,11 +56,6 @@ namespace backend.Controllers
             }
         }
 
-        /// <summary>
-        /// Create a new job posting
-        /// </summary>
-        /// <param name="createJobDto">Job posting data</param>
-        /// <returns>Created job posting</returns>
         [HttpPost]
         public async Task<ActionResult<JobPostingDto>> CreateJob([FromBody] CreateJobPostingDto createJobDto)
         {
@@ -93,12 +78,6 @@ namespace backend.Controllers
             }
         }
 
-        /// <summary>
-        /// Update an existing job posting
-        /// </summary>
-        /// <param name="id">Job posting ID</param>
-        /// <param name="updateJobDto">Updated job posting data</param>
-        /// <returns>Updated job posting</returns>
         [HttpPut("{id:int}")]
         public async Task<ActionResult<JobPostingDto>> UpdateJob(int id, [FromBody] CreateJobPostingDto updateJobDto)
         {
@@ -126,11 +105,6 @@ namespace backend.Controllers
             }
         }
 
-        /// <summary>
-        /// Delete (deactivate) a job posting
-        /// </summary>
-        /// <param name="id">Job posting ID</param>
-        /// <returns>Success status</returns>
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteJob(int id)
         {

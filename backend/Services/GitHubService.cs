@@ -96,7 +96,7 @@ namespace backend.Services
             var page = 1;
             const int perPage = 100;
 
-            while (page <= 5) // Limit to first 5 pages (500 repos max)
+            while (page <= 5)
             {
                 var response = await _httpClient.GetAsync($"https://api.github.com/users/{username}/repos?page={page}&per_page={perPage}&sort=updated");
                 
@@ -110,7 +110,6 @@ namespace backend.Services
 
                 foreach (var repo in repoArray.EnumerateArray())
                 {
-                    // Skip forks unless they have significant activity
                     if (repo.GetProperty("fork").GetBoolean() && repo.GetProperty("stargazers_count").GetInt32() == 0)
                         continue;
 
@@ -134,7 +133,7 @@ namespace backend.Services
                 page++;
             }
 
-            return repos.OrderByDescending(r => r.UpdatedAt).Take(50).ToList(); // Return most recent 50
+            return repos.OrderByDescending(r => r.UpdatedAt).Take(50).ToList();
         }
 
         private GitHubLanguageStatsDto CalculateLanguageStats(List<GitHubRepoDto> repositories)
@@ -163,8 +162,6 @@ namespace backend.Services
 
         private async Task<int> EstimateTotalCommitsAsync(string username, List<GitHubRepoDto> repositories)
         {
-            // Simple estimation based on repository activity
-            // In a real application, you might want to fetch actual commit counts
             var totalCommits = 0;
             var activeRepos = repositories.Where(r => r.PushedAt.HasValue && r.PushedAt.Value > DateTime.UtcNow.AddYears(-2)).Take(10);
 
@@ -190,15 +187,13 @@ namespace backend.Services
                 }
                 catch
                 {
-                    // Estimate based on repo size and activity
                     totalCommits += Math.Max(1, repo.Size / 100);
                 }
 
-                // Add small delay to avoid rate limiting
                 await Task.Delay(100);
             }
 
-            return Math.Max(totalCommits, repositories.Count * 2); // Minimum estimate
+            return Math.Max(totalCommits, repositories.Count * 2);
         }
     }
 }

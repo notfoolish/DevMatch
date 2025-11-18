@@ -6,7 +6,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
   const [filterLevel, setFilterLevel] = useState('all')
   const [filterType, setFilterType] = useState('all')
 
-  // Calculate job match scores based on AI analysis
   const jobsWithScores = useMemo(() => {
     if (!aiAnalysis || !jobs.length) return jobs
 
@@ -18,7 +17,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
       let matchingSkills = []
       let missingSkills = []
 
-      // Calculate skill match
       const jobSkills = job.requiredSkills?.map(skill => skill.toLowerCase()) || []
       
       jobSkills.forEach(skill => {
@@ -32,7 +30,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
         }
       })
 
-      // Calculate experience level match
       const jobLevel = job.experienceLevel?.toLowerCase() || ''
       if (jobLevel.includes(userLevel) || userLevel.includes(jobLevel)) {
         score += 20
@@ -40,10 +37,9 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
         (userLevel.includes('senior') && jobLevel.includes('mid')) ||
         (userLevel.includes('mid') && jobLevel.includes('junior'))
       ) {
-        score += 10 // Overqualified but still a match
+        score += 10
       }
 
-      // Bonus for high-priority skills
       const prioritySkills = ['react', 'javascript', 'typescript', 'python', 'java', 'c#', 'node']
       prioritySkills.forEach(skill => {
         if (matchingSkills.includes(skill)) {
@@ -51,7 +47,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
         }
       })
 
-      // Normalize score to 0-100
       const maxPossibleScore = (jobSkills.length * 10) + 20 + (prioritySkills.length * 5)
       const normalizedScore = maxPossibleScore > 0 ? Math.min(100, (score / maxPossibleScore) * 100) : 0
 
@@ -59,30 +54,26 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
         ...job,
         matchScore: Math.round(normalizedScore),
         matchingSkills,
-        missingSkills: missingSkills.slice(0, 5) // Limit to top 5 missing skills
+        missingSkills: missingSkills.slice(0, 5)
       }
     })
   }, [jobs, aiAnalysis])
 
-  // Filter and sort jobs
   const filteredJobs = useMemo(() => {
     let filtered = jobsWithScores
 
-    // Filter by experience level
     if (filterLevel !== 'all') {
       filtered = filtered.filter(job => 
         job.experienceLevel?.toLowerCase().includes(filterLevel.toLowerCase())
       )
     }
 
-    // Filter by job type
     if (filterType !== 'all') {
       filtered = filtered.filter(job => 
         job.type?.toLowerCase() === filterType.toLowerCase()
       )
     }
 
-    // Sort jobs
     return filtered.sort((a, b) => {
       switch (sortBy) {
         case 'relevance':
@@ -131,7 +122,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
 
   return (
     <div className="space-y-6">
-      {/* Header with filters */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Job Matches</h2>
@@ -176,7 +166,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
         </div>
       </div>
 
-      {/* AI Analysis Summary */}
       {aiAnalysis && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h3 className="font-medium text-blue-900 mb-2">🎯 Your Profile Summary</h3>
@@ -195,7 +184,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
         </div>
       )}
 
-      {/* Job List */}
       {filteredJobs.length === 0 ? (
         <div className="text-center py-16">
           <Briefcase className="h-16 w-16 text-gray-400 mx-auto mb-4" />
@@ -266,7 +254,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
                 </div>
               </div>
 
-              {/* Skills and Match Details */}
               {aiAnalysis && (job.matchingSkills?.length > 0 || job.missingSkills?.length > 0) && (
                 <div className="border-t border-gray-200 pt-4">
                   <div className="grid sm:grid-cols-2 gap-4">
@@ -309,7 +296,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
                 </div>
               )}
 
-              {/* Required Skills (fallback if no AI analysis) */}
               {!aiAnalysis && job.requiredSkills?.length > 0 && (
                 <div className="border-t border-gray-200 pt-4">
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Required Skills</h4>
@@ -326,7 +312,6 @@ const JobMatches = ({ jobs = [], aiAnalysis, profileData }) => {
                 </div>
               )}
 
-              {/* Apply Button */}
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <button className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                   View Details & Apply

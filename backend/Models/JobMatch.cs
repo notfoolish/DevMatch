@@ -27,7 +27,6 @@ namespace backend.Models
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
-        // Navigation properties
         public virtual GitHubProfile GitHubProfile { get; set; } = null!;
         
         public virtual JobPosting JobPosting { get; set; } = null!;

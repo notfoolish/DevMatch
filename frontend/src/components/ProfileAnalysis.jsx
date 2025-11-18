@@ -49,7 +49,6 @@ const ProfileAnalysis = ({ profileData, aiAnalysis, isLoading }) => {
 
   const { profile, repositories, languageStats } = profileData
 
-  // Prepare language data for chart
   const languageData = languageStats?.languages ? Object.entries(languageStats.languages)
     .sort(([,a], [,b]) => b - a)
     .slice(0, 8) : []
@@ -69,14 +68,12 @@ const ProfileAnalysis = ({ profileData, aiAnalysis, isLoading }) => {
     ]
   }
 
-  // Prepare activity data for chart (mock data since GitHub API doesn't provide this easily)
-  const activityData = [] // We'll remove this chart since we don't have this data
+  const activityData = []
   const activityChartData = {
     labels: [],
     datasets: []
   }
 
-  // Repository size distribution
   const repoSizes = repositories?.map(repo => repo.size || 0) || []
   const sizeRanges = ['< 1MB', '1-10MB', '10-50MB', '50MB+']
   const sizeCounts = [
@@ -130,7 +127,6 @@ const ProfileAnalysis = ({ profileData, aiAnalysis, isLoading }) => {
 
   return (
     <div className="space-y-8">
-      {/* Profile Header */}
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
           <img
@@ -182,7 +178,6 @@ const ProfileAnalysis = ({ profileData, aiAnalysis, isLoading }) => {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow-sm border p-6 text-center">
           <div className="text-2xl font-bold text-blue-600">{formatNumber(profile?.publicRepos || 0)}</div>
@@ -202,7 +197,6 @@ const ProfileAnalysis = ({ profileData, aiAnalysis, isLoading }) => {
         </div>
       </div>
 
-      {/* AI Analysis */}
       {aiAnalysis && (
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-4">🤖 AI Analysis</h3>
@@ -240,9 +234,7 @@ const ProfileAnalysis = ({ profileData, aiAnalysis, isLoading }) => {
         </div>
       )}
 
-      {/* Charts */}
       <div className="grid md:grid-cols-2 gap-8">
-        {/* Language Distribution */}
         {languageData.length > 0 && (
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Programming Languages</h3>
@@ -252,7 +244,6 @@ const ProfileAnalysis = ({ profileData, aiAnalysis, isLoading }) => {
           </div>
         )}
 
-        {/* Repository Size Distribution */}
         {repositories && repositories.length > 0 && (
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Repository Sizes</h3>
@@ -263,7 +254,6 @@ const ProfileAnalysis = ({ profileData, aiAnalysis, isLoading }) => {
         )}
       </div>
 
-      {/* Activity Chart */}
       {false && activityData.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Commit Activity (Last 52 Weeks)</h3>
@@ -288,7 +278,6 @@ const ProfileAnalysis = ({ profileData, aiAnalysis, isLoading }) => {
         </div>
       )}
 
-      {/* Recent Repositories */}
       {repositories && repositories.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Repositories</h3>

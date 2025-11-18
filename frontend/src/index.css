@@ -19,7 +19,6 @@ body {
   box-sizing: border-box;
 }
 
-/* Custom utilities for text truncation */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -34,18 +33,15 @@ body {
   overflow: hidden;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom focus styles for better accessibility */
 .focus-visible {
   outline: 2px solid #3B82F6;
   outline-offset: 2px;
 }
 
-/* Animation for loading spinner */
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -56,7 +52,6 @@ html {
   animation: spin 1s linear infinite;
 }
 
-/* Responsive chart containers */
 @media (max-width: 640px) {
   .chart-container canvas {
     max-height: 200px !important;

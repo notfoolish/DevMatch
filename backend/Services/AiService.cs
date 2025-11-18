@@ -63,17 +63,10 @@ namespace backend.Services
         {
             try
             {
-                // Get GitHub data and AI analysis
                 var gitHubData = await _gitHubService.AnalyzeProfileAsync(username);
                 var profileAnalysis = await AnalyzeProfileAsync(username, gitHubData);
-                
-                // Get user location for location-based job search
                 var userLocation = gitHubData.Profile?.Location;
-                
-                // Get available jobs with location consideration
                 var jobs = await _jobService.GetActiveJobsAsync(userLocation);
-                
-                // Generate job matches
                 var jobMatches = await GenerateJobMatches(profileAnalysis, jobs);
 
                 return new JobMatchResponseDto
@@ -176,7 +169,6 @@ namespace backend.Services
         {
             try
             {
-                // Try to extract JSON from the AI response
                 var jsonStart = aiResponse.IndexOf('{');
                 var jsonEnd = aiResponse.LastIndexOf('}') + 1;
                 
@@ -255,7 +247,7 @@ namespace backend.Services
         {
             var matches = new List<JobMatchAnalysisDto>();
 
-            foreach (var job in jobs.Take(10)) // Limit to top 10 jobs
+            foreach (var job in jobs.Take(10))
             {
                 var matchingSkills = job.RequiredSkills.Intersect(profileAnalysis.Skills, StringComparer.OrdinalIgnoreCase).ToList();
                 var missingSkills = job.RequiredSkills.Except(profileAnalysis.Skills, StringComparer.OrdinalIgnoreCase).ToList();
@@ -284,7 +276,7 @@ namespace backend.Services
 
             if (accountAge.Days < 365 || repoCount < 5 || totalCommits < 50)
                 return "Junior";
-            else if (accountAge.Days > 1825 && repoCount > 20 && totalCommits > 500) // 5+ years
+            else if (accountAge.Days > 1825 && repoCount > 20 && totalCommits > 500)
                 return "Senior";
             else
                 return "Mid";
@@ -349,20 +341,16 @@ namespace backend.Services
 
         private decimal CalculateOverallScore(GitHubAnalysisResponseDto gitHubData)
         {
-            var score = 0.5m; // Base score
+            var score = 0.5m;
             
-            // Repository count contribution
             var repoCount = gitHubData.Profile?.PublicRepos ?? 0;
             score += Math.Min(0.2m, repoCount * 0.01m);
             
-            // Language diversity
             score += Math.Min(0.15m, gitHubData.LanguageStats.Languages.Count * 0.03m);
             
-            // Community engagement
             var followers = gitHubData.Profile?.Followers ?? 0;
             score += Math.Min(0.1m, followers * 0.002m);
             
-            // Commit activity
             score += Math.Min(0.05m, gitHubData.TotalCommits * 0.0001m);
             
             return Math.Min(1.0m, score);
@@ -372,7 +360,6 @@ namespace backend.Services
         {
             var baseScore = 0.3m;
             
-            // Skills match
             var requiredSkillsCount = job.RequiredSkills.Count;
             if (requiredSkillsCount > 0)
             {
@@ -380,11 +367,9 @@ namespace backend.Services
                 baseScore += skillMatchRatio * 0.4m;
             }
             
-            // Experience level match
             if (string.Equals(profile.ExperienceLevel, job.ExperienceLevel, StringComparison.OrdinalIgnoreCase))
                 baseScore += 0.2m;
             
-            // Language match
             var languageMatch = job.RequiredSkills.Intersect(profile.PrimaryLanguages, StringComparer.OrdinalIgnoreCase).Any();
             if (languageMatch)
                 baseScore += 0.1m;

@@ -17,11 +17,6 @@ namespace backend.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Get AI-powered job matches for a GitHub user
-        /// </summary>
-        /// <param name="username">GitHub username to analyze and match with jobs</param>
-        /// <returns>AI analysis of the profile and job matches with scores</returns>
         [HttpGet("match/{username}")]
         public async Task<ActionResult<JobMatchResponseDto>> GetJobMatches(string username)
         {
@@ -54,11 +49,6 @@ namespace backend.Controllers
             }
         }
 
-        /// <summary>
-        /// Get AI analysis of a GitHub profile only (without job matching)
-        /// </summary>
-        /// <param name="username">GitHub username to analyze</param>
-        /// <returns>AI analysis of the GitHub profile</returns>
         [HttpGet("analyze/{username}")]
         public async Task<ActionResult<AiAnalysisResponseDto>> AnalyzeProfile(string username)
         {
@@ -71,7 +61,6 @@ namespace backend.Controllers
 
                 _logger.LogInformation($"Getting AI analysis for username: {username}");
                 
-                // First get GitHub data, then analyze with AI
                 var gitHubService = HttpContext.RequestServices.GetService<IGitHubService>();
                 if (gitHubService == null)
                 {

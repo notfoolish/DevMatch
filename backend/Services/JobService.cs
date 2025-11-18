@@ -33,7 +33,6 @@ namespace backend.Services
             {
                 var allJobs = new List<JobPostingDto>();
 
-                // Get jobs from local database
                 try
                 {
                     var dbJobs = await _context.JobPostings
@@ -49,7 +48,6 @@ namespace backend.Services
                     _logger.LogWarning(dbEx, "Failed to retrieve jobs from database, continuing with external sources");
                 }
 
-                // Get jobs from Jooble API - use location-based search
                 try
                 {
                     var searchLocation = DetermineSearchLocation(userLocation);
@@ -62,14 +60,12 @@ namespace backend.Services
                     _logger.LogWarning(joobleEx, "Failed to retrieve jobs from Jooble API");
                 }
 
-                // If no jobs from any source, return sample jobs
                 if (!allJobs.Any())
                 {
                     _logger.LogInformation("No jobs found from any source, returning sample jobs");
                     return GetSampleJobs();
                 }
 
-                // Remove duplicates and return
                 return allJobs
                     .GroupBy(j => new { j.Title, j.Company })
                     .Select(g => g.First())
@@ -184,53 +180,41 @@ namespace backend.Services
         private string DetermineSearchLocation(string? userLocation)
         {
             if (string.IsNullOrEmpty(userLocation))
-                return "remote"; // Default to remote jobs if no location specified
+                return "remote";
 
-            // Extract country/region from user location
             var location = userLocation.ToLower().Trim();
             
-            // Map common location patterns to search terms that work well with Jooble
             var locationMappings = new Dictionary<string, string>
             {
-                // European countries - use country names for better results
                 { "hungary", "Hungary" },
                 { "budapest", "Hungary" },
                 { "debrecen", "Hungary" },
                 { "szeged", "Hungary" },
-                { "pécs", "Hungary" },
-                
+                { "p\u00e9cs", "Hungary" },
                 { "germany", "Germany" },
                 { "berlin", "Germany" },
                 { "munich", "Germany" },
                 { "hamburg", "Germany" },
-                
                 { "united kingdom", "United Kingdom" },
                 { "uk", "United Kingdom" },
                 { "london", "United Kingdom" },
                 { "manchester", "United Kingdom" },
-                
                 { "france", "France" },
                 { "paris", "France" },
                 { "lyon", "France" },
-                
                 { "netherlands", "Netherlands" },
                 { "amsterdam", "Netherlands" },
                 { "rotterdam", "Netherlands" },
-                
                 { "poland", "Poland" },
                 { "warsaw", "Poland" },
                 { "krakow", "Poland" },
-                { "kraków", "Poland" },
-                
+                { "krak\u00f3w", "Poland" },
                 { "spain", "Spain" },
                 { "madrid", "Spain" },
                 { "barcelona", "Spain" },
-                
                 { "italy", "Italy" },
                 { "rome", "Italy" },
                 { "milan", "Italy" },
-                
-                // North America
                 { "united states", "United States" },
                 { "usa", "United States" },
                 { "us", "United States" },
@@ -240,28 +224,22 @@ namespace backend.Services
                 { "new york", "New York" },
                 { "seattle", "Seattle" },
                 { "austin", "Austin" },
-                
                 { "canada", "Canada" },
                 { "toronto", "Toronto" },
                 { "vancouver", "Vancouver" },
                 { "montreal", "Montreal" },
-                
-                // Other regions
                 { "australia", "Australia" },
                 { "sydney", "Sydney" },
                 { "melbourne", "Melbourne" },
-                
                 { "india", "India" },
                 { "bangalore", "Bangalore" },
                 { "mumbai", "Mumbai" },
                 { "delhi", "Delhi" },
-                
                 { "singapore", "Singapore" },
                 { "japan", "Japan" },
                 { "tokyo", "Tokyo" },
             };
 
-            // Try exact matches first
             foreach (var mapping in locationMappings)
             {
                 if (location.Contains(mapping.Key))
@@ -270,15 +248,13 @@ namespace backend.Services
                 }
             }
 
-            // If no mapping found, try to extract the first word (might be a country)
             var words = userLocation.Split(',', StringSplitOptions.RemoveEmptyEntries);
             if (words.Length > 0)
             {
-                var firstLocation = words[^1].Trim(); // Get last part (usually country)
+                var firstLocation = words[^1].Trim();
                 return firstLocation;
             }
 
-            // Fallback to the original location cleaned up
             return userLocation.Trim();
         }
 

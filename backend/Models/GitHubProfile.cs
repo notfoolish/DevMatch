@@ -32,7 +32,6 @@ namespace backend.Models
         
         public string? AvatarUrl { get; set; }
         
-        // AI Analysis Results
         public string? SkillsAnalysis { get; set; }
         
         public string? ExperienceLevel { get; set; }
@@ -45,7 +44,6 @@ namespace backend.Models
         
         public DateTime AnalyzedAt { get; set; } = DateTime.UtcNow;
         
-        // Navigation properties
         public virtual ICollection<JobMatch> JobMatches { get; set; } = new List<JobMatch>();
     }
 }

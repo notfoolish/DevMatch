@@ -17,7 +17,6 @@ namespace backend.Data
         {
             base.OnModelCreating(modelBuilder);
             
-            // GitHubProfile configuration
             modelBuilder.Entity<GitHubProfile>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -31,7 +30,6 @@ namespace backend.Data
                 entity.Property(e => e.MatchScore).HasPrecision(5, 2);
             });
             
-            // JobPosting configuration
             modelBuilder.Entity<JobPosting>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -44,13 +42,11 @@ namespace backend.Data
                 entity.Property(e => e.SalaryCurrency).HasMaxLength(3);
             });
             
-            // JobMatch configuration
             modelBuilder.Entity<JobMatch>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.MatchScore).HasPrecision(5, 2);
                 
-                // Relationships
                 entity.HasOne(e => e.GitHubProfile)
                       .WithMany(e => e.JobMatches)
                       .HasForeignKey(e => e.GitHubProfileId)
@@ -61,7 +57,6 @@ namespace backend.Data
                       .HasForeignKey(e => e.JobPostingId)
                       .OnDelete(DeleteBehavior.Cascade);
                       
-                // Composite index for unique matches
                 entity.HasIndex(e => new { e.GitHubProfileId, e.JobPostingId }).IsUnique();
             });
         }

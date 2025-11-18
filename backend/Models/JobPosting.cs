@@ -38,7 +38,6 @@ namespace backend.Models
         
         public string? ApplicationUrl { get; set; }
         
-        // Navigation properties
         public virtual ICollection<JobMatch> JobMatches { get; set; } = new List<JobMatch>();
     }
 }

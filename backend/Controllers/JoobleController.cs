@@ -17,13 +17,6 @@ namespace backend.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Search jobs from Jooble API
-        /// </summary>
-        /// <param name="keywords">Search keywords</param>
-        /// <param name="location">Job location</param>
-        /// <param name="page">Page number</param>
-        /// <returns>List of job postings from Jooble</returns>
         [HttpGet("search")]
         public async Task<ActionResult<List<JobPostingDto>>> SearchJobs(
             [FromQuery] string keywords = "", 
@@ -44,12 +37,6 @@ namespace backend.Controllers
             }
         }
 
-        /// <summary>
-        /// Get tech jobs from Jooble API
-        /// </summary>
-        /// <param name="location">Job location</param>
-        /// <param name="page">Page number</param>
-        /// <returns>List of tech job postings from Jooble</returns>
         [HttpGet("tech")]
         public async Task<ActionResult<List<JobPostingDto>>> GetTechJobs(
             [FromQuery] string location = "", 

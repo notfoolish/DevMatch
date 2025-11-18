@@ -1,4 +1,3 @@
-// Demo data for testing the application when backend is not available
 export const demoGitHubData = {
   profile: {
     login: "octocat",

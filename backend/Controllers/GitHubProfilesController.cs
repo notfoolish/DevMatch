@@ -55,7 +55,6 @@ namespace backend.Controllers
         {
             try
             {
-                // Check if profile already exists
                 var existingProfile = await _context.GitHubProfiles
                     .FirstOrDefaultAsync(p => p.GitHubUsername == username);
 
@@ -64,8 +63,6 @@ namespace backend.Controllers
                     return Ok(existingProfile);
                 }
 
-                // TODO: Implement GitHub API call and AI analysis
-                // For now, return a placeholder
                 var profile = new GitHubProfile
                 {
                     GitHubUsername = username,
